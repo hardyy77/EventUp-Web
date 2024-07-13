@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - EventUp</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>EventUp</h1>
+        <h2 id="section-title">PROFIL</h2>
+        <nav>
+            <ul>
+                <li><a href="home.html">Główna</a></li>
+                <li><a href="search.html">Szukaj</a></li>
+                <li><a href="favorites.html">Ulubione</a></li>
+                <li><a href="profile.html">Profil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="profile-section">
+            <form id="register-form" style="display:none;">
+                <h3>Zarejestruj</h3>
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <input type="text" id="register-display-name" placeholder="Display Name" required>
+                <button type="submit">Zarejestruj</button>
+            </form>
+            <form id="login-form">
+                <h3>Zaloguj</h3>
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Zaloguj</button>
+                <p>Nie masz konta? <a href="#" id="show-register-form">Zarejestruj się</a></p>
+            </form>
+            <div id="profile-info" style="display:none;">
+                <p id="welcome-message"></p>
+                <button id="logout-button">Wyloguj</button>
+            </div>
+        </section>
+        <section id="add-event-section" style="display: none;">
+            <h2>Dodaj Nowe Wydarzenie</h2>
+            <form id="add-event-form">
+                <input type="text" id="event-name" placeholder="Nazwa wydarzenia" required>
+                <input type="text" id="event-location" placeholder="Lokalizacja" required>
+                <input type="date" id="event-date" placeholder="Data" required>
+                <input type="text" id="event-genres" placeholder="Gatunki">
+                <textarea id="event-description" placeholder="Opis wydarzenia"></textarea>
+                <button type="submit">Dodaj Wydarzenie</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>EventUp &copy; 2024</p>
+    </footer>
+
+    <script type="module">
+        import { currentUser, logoutUser } from './assets/js/utils.js';
+        import { addEvent } from './assets/js/events/events.js';
+        import './assets/js/auth/login.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOMContentLoaded event triggered');
+            window.currentUser = currentUser;
+
+            console.log('Current user:', currentUser);
+
+            // Wyświetlanie informacji o użytkowniku
+            const profileInfo = document.getElementById('profile-info');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const loginForm = document.getElementById('login-form');
+            const addEventSection = document.getElementById('add-event-section');
+
+            if (currentUser) {
+                welcomeMessage.innerHTML = `Welcome, ${currentUser.displayName || currentUser.email}!<br>Email: ${currentUser.email}`;
+                profileInfo.style.display = 'block';
+                loginForm.style.display = 'none';
+
+                // Pokaż sekcję dodawania wydarzeń tylko dla administratora
+                if (currentUser.role === 'admin') {
+                    addEventSection.style.display = 'block';
+                }
+            } else {
+                loginForm.style.display = 'block';
+                profileInfo.style.display = 'none';
+            }
+
+            // Obsługa formularza dodawania wydarzeń
+            const addEventForm = document.getElementById('add-event-form');
+            if (addEventForm) {
+                addEventForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const eventData = {
+                        name: document.getElementById('event-name').value,
+                        location: document.getElementById('event-location').value,
+                        date: document.getElementById('event-date').value,
+                        genres: document.getElementById('event-genres').value,
+                        description: document.getElementById('event-description').value,
+                    };
+                    console.log('Adding event with data:', eventData);
+                    try {
+                        await addEvent(eventData);
+                        alert('Wydarzenie zostało dodane pomyślnie!');
+                        addEventSection.style.display = 'none';
+                        addEventForm.reset();
+                    } catch (error) {
+                        console.error('Error adding event:', error);
+                        alert('Wystąpił błąd podczas dodawania wydarzenia');
+                    }
+                };
+            }
+
+            // Obsługa przycisku wylogowania
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.onclick = () => {
+                    console.log('Logout button clicked');
+                    logoutUser();
+                    window.location.reload(); // Reload the page to update the profile section
+                };
+            }
+        });
+    </script>
+</body>
+</html>

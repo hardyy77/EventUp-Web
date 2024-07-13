@@ -1,0 +1,268 @@
+/* Stylizacja dla całego dokumentu */
+body {
+    background-color: #23272A;
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Stylizacja nagłówka */
+header {
+    background-color: #2C2F33;
+    color: #FFFFFF;
+    padding: 1em;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+header h2 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+/* Stylizacja nawigacji */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 1em;
+}
+
+nav ul li a {
+    color: #99AAB5;
+    text-decoration: none;
+    padding: 0.5em 1em;
+    border: 1px solid #99AAB5;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    color: #7289DA;
+}
+
+/* Stylizacja głównej sekcji */
+main {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+section {
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 2em;
+}
+
+h2, h3 {
+    color: #7289DA;
+}
+
+/* Stylizacja sekcji popularnych i najnowszych wydarzeń */
+#popular-events-section, #latest-events-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Stylizacja kart wydarzeń */
+.event-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.event-card {
+    background-color: #2C2F33;
+    border: 1px solid #99AAB5;
+    border-radius: 5px;
+    padding: 1em;
+    width: 250px;
+}
+
+.event-card h3 {
+    margin-top: 0;
+}
+
+/* Stylizacja stopki karty wydarzenia */
+.event-card-footer {
+    text-align: right;
+}
+
+.event-card-footer button {
+    background-color: #7289DA; 
+    color: #FFFFFF;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.event-card-footer button:hover {
+    background-color: #99AAB5; 
+}
+
+/* Stylizacja formularzy */
+#login-form, #register-form, #search-form, #add-event-form {
+    background-color: #2C2F33;
+    padding: 1em;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#login-form input, #register-form input, #search-form input, #add-event-form input, #add-event-form textarea, #login-form button, #register-form button, #add-event-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    border: none;
+    border-radius: 5px;
+}
+
+#login-form button, #register-form button, #add-event-form button {
+    background-color: #7289DA; 
+    color: #FFFFFF; 
+    cursor: pointer;
+}
+
+#login-form button:hover, #register-form button:hover, #add-event-form button:hover {
+    background-color: #99AAB5; 
+}
+
+/* Stylizacja informacji o profilu i akcji administratora */
+#profile-info, #admin-actions {
+    background-color: #2C2F33; 
+    padding: 1em;
+    border-radius: 5px;
+    margin-top: 1em;
+    text-align: center;
+}
+
+#profile-info h3 {
+    margin-top: 0;
+}
+
+/* Stylizacja przycisku wylogowania */
+#logout-button {
+    background-color: #7289DA; 
+    color: #FFFFFF; 
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logout-button:hover {
+    background-color: #99AAB5; 
+}
+
+/* Stylizacja stopki */
+footer {
+    background-color: #2C2F33; 
+    color: #FFFFFF; 
+    text-align: center;
+    padding: 1em;
+    width: 100%;
+    bottom: 0;
+    position: static;
+}
+
+/* Stylizacja okna modalnego */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #2C2F33; 
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #7289DA; 
+    width: 50%;
+    border-radius: 5px;
+    color: #FFFFFF; 
+}
+
+/* Stylizacja przycisku zamykania okna modalnego */
+.close-button {
+    color: #FFFFFF; 
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #7289DA;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Media Queries */
+/* Dostosowanie dla ekranów o szerokości 768px lub mniejszej */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        display: block;
+        margin-bottom: 1em;
+    }
+
+    .event-cards {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .event-card {
+        width: 100%;
+        margin-bottom: 1em;
+    }
+}
+
+/* Dostosowanie dla ekranów o szerokości 480px lub mniejszej */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2em;
+    }
+
+    header h2 {
+        font-size: 1em;
+    }
+
+    nav ul li a {
+        padding: 0.5em;
+        font-size: 0.9em;
+    }
+
+    .event-card {
+        padding: 0.5em;
+    }
+
+    .event-card-footer button {
+        padding: 0.3em 0.5em;
+        font-size: 0.8em;
+    }
+}

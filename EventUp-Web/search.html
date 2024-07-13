@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - EventUp</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>EventUp</h1>
+        <h2 id="section-title">SZUKAJ</h2>
+        <nav>
+            <ul>
+                <li><a href="home.html">Główna</a></li>
+                <li><a href="search.html">Szukaj</a></li>
+                <li><a href="favorites.html">Ulubione</a></li>
+                <li><a href="profile.html">Profil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="search-section">
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="Szukaj wydarzeń..." oninput="handleSearch()">
+            </form>
+            <div id="search-results-list"></div>
+        </section>
+    </main>
+    <footer>
+        <p>EventUp &copy; 2024</p>
+    </footer>
+
+    <!-- Modalne okno -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Edytuj Wydarzenie</h2>
+            <form id="edit-event-form">
+                <input type="hidden" id="event-id">
+                <label for="event-name">Nazwa Wydarzenia:</label>
+                <input type="text" id="event-name" required>
+                <label for="event-location">Miasto:</label>
+                <input type="text" id="event-location" required>
+                <label for="event-date">Data:</label>
+                <input type="date" id="event-date" required>
+                <label for="event-genres">Gatunek:</label>
+                <input type="text" id="event-genres" required>
+                <label for="event-description">Opis:</label>
+                <textarea id="event-description" required></textarea>
+                <button type="submit">Zapisz</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { fetchJson, API_URL, currentUser, setFavoriteEventIds, loadEvents, allEvents } from './assets/js/utils.js';
+        window.currentUser = currentUser;
+
+        import './assets/js/events/events.js';
+        import { displayEvents } from './assets/js/events/events.js';
+        import { getFavoriteEvents, renderFavorites } from './assets/js/events/favorites.js';
+
+        // Automatyczne logowanie po odświeżeniu strony
+        if (window.currentUser) {
+            getFavoriteEvents(window.currentUser.uid)
+                .then(favoriteEvents => {
+                    console.log('Fetched favorite events:', favoriteEvents);
+                    setFavoriteEventIds(favoriteEvents.map(event => event.id));
+                    renderFavorites(favoriteEvents);
+                })
+                .catch(error => {
+                    console.error('Error fetching favorite events:', error);
+                    alert('Wystąpił błąd podczas pobierania ulubionych wydarzeń');
+                });
+        } else {
+            console.warn('User not logged in');
+        }
+
+        // Funkcja obsługująca wyszukiwanie
+        async function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filteredEvents = allEvents.filter(event =>
+                event.name.toLowerCase().includes(query) ||
+                event.description.toLowerCase().includes(query) ||
+                event.date.includes(query) ||
+                (event.genres && event.genres.toLowerCase().includes(query))
+            );
+            displayEvents(filteredEvents, 'search-results-list');
+        }
+
+        window.handleSearch = handleSearch;
+
+        // Ładowanie wydarzeń po załadowaniu strony
+        try {
+            await loadEvents();
+            console.log('Events loaded successfully');
+        } catch (error) {
+            console.error('Error loading events:', error);
+            alert('Wystąpił błąd podczas ładowania wydarzeń');
+        }
+        
+        // Wyświetlanie wszystkich wydarzeń na starcie
+        displayEvents(allEvents, 'search-results-list');
+    </script>
+</body>
+</html>

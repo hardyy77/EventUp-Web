@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites - EventUp</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>EventUp</h1>
+        <h2 id="section-title">ULUBIONE</h2>
+        <nav>
+            <ul>
+                <li><a href="home.html">Główna</a></li>
+                <li><a href="search.html">Szukaj</a></li>
+                <li><a href="favorites.html">Ulubione</a></li>
+                <li><a href="profile.html">Profil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="favorites-section">
+            <div id="favorites-list" class="event-cards"></div>
+        </section>
+    </main>
+    <footer>
+        <p>EventUp &copy; 2024</p>
+    </footer>
+
+    <script type="module">
+        import { currentUser, setFavoriteEventIds, loadEvents } from './assets/js/utils.js';
+        window.currentUser = currentUser;
+
+        import './assets/js/events/events.js';
+        import { getFavoriteEvents, renderFavorites } from './assets/js/events/favorites.js';
+
+        //Automatyczne logowanie po odświeżeniu strony
+        if (window.currentUser) {
+            getFavoriteEvents(window.currentUser.uid)
+                .then(favoriteEvents => {
+                    console.log('Favorite events fetched successfully:', favoriteEvents);
+                    setFavoriteEventIds(favoriteEvents.map(event => event.id));
+                    renderFavorites(favoriteEvents);
+                })
+                .catch(error => {
+                    console.error('Error fetching favorite events:', error);
+                    alert('Wystąpił błąd podczas pobierania ulubionych wydarzeń');
+                });
+        } else {
+            console.warn('User not logged in, cannot fetch favorite events');
+        }
+
+        // Ładowanie wydarzeń po załadowaniu strony
+        loadEvents()
+            .then(() => console.log('Events loaded successfully'))
+            .catch(error => {
+                console.error('Error loading events:', error);
+                alert('Wystąpił błąd podczas ładowania wydarzeń');
+            });
+    </script>
+</body>
+</html>

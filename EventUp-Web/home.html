@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventUp</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>EventUp</h1>
+        <h2 id="section-title">GŁÓWNA</h2>
+        <nav>
+            <ul>
+                <li><a href="home.html">Główna</a></li>
+                <li><a href="search.html">Szukaj</a></li>
+                <li><a href="favorites.html">Ulubione</a></li>
+                <li><a href="profile.html">Profil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="home-section">
+            <section id="popular-events-section">
+                <h3>Popularne wydarzenia</h3>
+                <div id="popular-events-list"></div>
+            </section>
+            <section id="latest-events-section">
+                <h3>Ostatnio dodane wydarzenia</h3>
+                <div id="latest-events-list"></div>
+            </section>
+        </section>
+    </main>
+    <footer>
+        <p>EventUp &copy; 2024</p>
+    </footer>
+
+    <!-- Modalne okno -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Edytuj Wydarzenie</h2>
+            <form id="edit-event-form">
+                <input type="hidden" id="event-id">
+                <label for="event-name" style="color: black;">Nazwa Wydarzenia:</label>
+                <input type="text" id="event-name" required>
+                <label for="event-location" style="color: black;">Miasto:</label>
+                <input type="text" id="event-location" required>
+                <label for="event-date" style="color: black;">Data:</label>
+                <input type="date" id="event-date" required>
+                <label for="event-genres" style="color: black;">Gatunek:</label>
+                <input type="text" id="event-genres" required>
+                <label for="event-description" style="color: black;">Opis:</label>
+                <textarea id="event-description" required></textarea>
+                <button type="submit">Zapisz</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { currentUser, setFavoriteEventIds, loadEvents, allEvents } from './assets/js/utils.js';
+        window.currentUser = currentUser;
+
+        import { getFavoriteEvents, renderFavorites } from './assets/js/events/favorites.js';
+        import { displayEvents, getPopularEvents, getLatestEvents } from './assets/js/events/events.js';
+
+        // Automatyczne logowanie po odświeżeniu strony
+        if (window.currentUser) {
+            getFavoriteEvents(window.currentUser.uid).then(favoriteEvents => {
+                console.log('Fetched favorite events:', favoriteEvents);
+                setFavoriteEventIds(favoriteEvents.map(event => event.id));
+                renderFavorites(favoriteEvents);
+            }).catch(error => {
+                console.error('Error fetching favorite events:', error);
+                alert('Wystąpił błąd podczas pobierania ulubionych wydarzeń');
+            });
+        } else {
+            console.warn('User not logged in');
+        }
+
+        // Ładowanie wydarzeń po załadowaniu strony
+        try {
+            await loadEvents();
+            console.log('Events loaded successfully');
+        } catch (error) {
+            console.error('Error loading events:', error);
+            alert('Wystąpił błąd podczas ładowania wydarzeń');
+        }
+        
+        // Wyświetlanie popularnych wydarzeń
+        try {
+            const popularEvents = await getPopularEvents(4);
+            displayEvents(popularEvents, 'popular-events-list');
+            console.log('Popular events loaded successfully');
+        } catch (error) {
+            console.error('Error fetching popular events:', error);
+            alert('Wystąpił błąd podczas ładowania popularnych wydarzeń');
+        }
+
+        // Wyświetlanie najnowszych wydarzeń
+        try {
+            const latestEvents = await getLatestEvents(4);
+            displayEvents(latestEvents, 'latest-events-list');
+            console.log('Latest events loaded successfully');
+        } catch (error) {
+            console.error('Error fetching latest events:', error);
+            alert('Wystąpił błąd podczas ładowania najnowszych wydarzeń');
+        }
+    </script>
+    <script type="module" src="assets/js/events/events.js"></script>
+</body>
+</html>
